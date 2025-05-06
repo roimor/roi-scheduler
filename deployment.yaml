@@ -1,3 +1,34 @@
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: roi-scheduler
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: roi-scheduler
+rules:
+- apiGroups: [""]
+  resources: ["pods", "nodes", "pods/status"]
+  verbs: ["get","list","watch","delete"]
+- apiGroups: [""]
+  resources: ["bindings"]
+  verbs: ["create"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: roi-scheduler
+subjects:
+- kind: ServiceAccount
+  name: roi-scheduler
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: roi-scheduler
+  apiGroup: rbac.authorization.k8s.io
+  
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,10 +45,10 @@ spec:
       labels:
         app: roi-scheduler
     spec:
-      serviceAccountName: default
+      serviceAccountName: roi-scheduler
       containers:
       - name: roi-scheduler
-        image: <your-image-name>
+        image: docker.io/roimor1/roi-scheduler:latest
         imagePullPolicy: IfNotPresent
         resources:
           limits:
