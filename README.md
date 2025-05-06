@@ -3,6 +3,12 @@
 ## Overview
 This project implements a custom secondary scheduler for Kubernetes clusters with advanced scheduling capabilities including gang scheduling and preemption support. The scheduler is designed to work alongside the default Kubernetes scheduler, providing additional scheduling strategies for specific workloads.
 
+### Quick Start
+Deploy the scheduler directly to your cluster:
+```bash
+kubectl apply -f https://raw.githubusercontent.com/roimor/roi-scheduler/refs/heads/main/deployment.yaml
+```
+
 ## Features
 
 ### Gang Scheduling
@@ -19,14 +25,6 @@ This project implements a custom secondary scheduler for Kubernetes clusters wit
 - Respects pod priority classes
 - Implements custom priority queue for pending pods
 - Ensures fair scheduling based on pod priorities
-
-## Installation
-
-### Quick Start
-Deploy the scheduler directly to your cluster:
-```bash
-kubectl apply -f https://raw.githubusercontent.com/roimor/roi-scheduler/refs/heads/main/deployment.yaml
-```
 
 ## Usage
 
