@@ -1,44 +1,73 @@
-# ssi
+# Custom Kubernetes Scheduler
 
-# Goal 
-create a custom secondery scheduler for a local kubernetes cluster, which can schedule pods with schedulerName. 
+## Overview
+This project implements a custom secondary scheduler for Kubernetes clusters with advanced scheduling capabilities including gang scheduling and preemption support. The scheduler is designed to work alongside the default Kubernetes scheduler, providing additional scheduling strategies for specific workloads.
 
-## scheduler features
-### Pods scheduler
-    1. watch for new pending pods in the system 
-    2. schedule pods in the order of their `priority` annotation (sort of all 'Pending' pods) 
-        - try to bind pod (maybe multiple times)
-        - if no nodes have enough resources to fit the pod
-            - Simulate preemption by checking if evicting lower-priority pods would help
-            - If so → preempt and schedule
-            - If not → log or back off
+## Features
 
-### Gang scheduler
-    watch for new jobs in the system
-        - jobs will have X number of pods 
-        - evalute available resources in the cluster to schedule all the pods at the same time. if there are not enough resources dont schedule any pods.
-    
+### Gang Scheduling
+- Coordinates the scheduling of related pods as a group
+- Ensures all pods in a gang are scheduled together or not at all
+- Uses job-id labels to identify pod groups
 
-### Tests
-    mocks for 
-        1. new Pending pods with priority annotations
-        2. new jobs yaml template 
-        3. test for each function maybe
+### Preemption Support
+- Implements priority-based pod preemption
+- Handles resource conflicts by evicting lower priority pods
+- Maintains system stability while maximizing resource utilization
+
+### Priority Handling
+- Respects pod priority classes
+- Implements custom priority queue for pending pods
+- Ensures fair scheduling based on pod priorities
+
+## Installation
+
+### Quick Start
+Deploy the scheduler directly to your cluster:
+```bash
+kubectl apply -f https://raw.githubusercontent.com/roimor/roi-scheduler/refs/heads/main/deployment.yaml
+```
+
+### Manual Installation
+1. Clone the repository:
+```bash
+git clone https://github.com/roimor/roi-scheduler.git
+cd roi-scheduler
+```
+
+2. Build the Docker image:
+```bash
+docker build -t roi-scheduler:latest .
+```
+
+3. Deploy to your cluster:
+```bash
+kubectl apply -f deployment.yaml
+```
+
+## Usage
+
+### Scheduling Pods with the Custom Scheduler
+To use this scheduler for your pods, add the following to your pod specification:
+```yaml
+spec:
+  schedulerName: roi-scheduler
+```
+
+### Gang Scheduling Example
+To schedule pods as a gang, add the following labels:
+```yaml
+metadata:
+  labels:
+    job-id: "your-gang-id"
+```
+
+## Development
+The project is structured as follows:
+- `scheduler.py`: Main scheduler implementation
+- `gang_scheduler.py`: Gang scheduling logic
+- `preemption.py`: Preemption handling
+- `utils.py`: Utility functions
+- `tests/`: Unit tests
 
 
-
-### script to set up the scheduler on an existing cluster 
-# create_scheduler.sh $namespace
-#`bash kubectl apply -f https://github.com/roimor/ssi-scheduler.yaml -n $1` 
-
-
-
-
-# 📁 project layout:
-# custom_k8s_scheduler/
-# ├── scheduler.py
-# ├── preemption.py
-# ├── gang_scheduler.py
-# ├── utils.py
-# └── tests/
-#     └── test_scheduler.py
