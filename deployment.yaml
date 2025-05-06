@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roi-scheduler
+  labels:
+    app: roi-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: roi-scheduler
+  template:
+    metadata:
+      labels:
+        app: roi-scheduler
+    spec:
+      serviceAccountName: default
+      containers:
+      - name: roi-scheduler
+        image: <your-image-name>
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+
+      restartPolicy: Always 
