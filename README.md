@@ -28,23 +28,6 @@ Deploy the scheduler directly to your cluster:
 kubectl apply -f https://raw.githubusercontent.com/roimor/roi-scheduler/refs/heads/main/deployment.yaml
 ```
 
-### Manual Installation
-1. Clone the repository:
-```bash
-git clone https://github.com/roimor/roi-scheduler.git
-cd roi-scheduler
-```
-
-2. Build the Docker image:
-```bash
-docker build -t roi-scheduler:latest .
-```
-
-3. Deploy to your cluster:
-```bash
-kubectl apply -f deployment.yaml
-```
-
 ## Usage
 
 ### Scheduling Pods with the Custom Scheduler
@@ -52,14 +35,6 @@ To use this scheduler for your pods, add the following to your pod specification
 ```yaml
 spec:
   schedulerName: roi-scheduler
-```
-
-### Gang Scheduling Example
-To schedule pods as a gang, add the following labels:
-```yaml
-metadata:
-  labels:
-    job-id: "your-gang-id"
 ```
 
 ## Development
